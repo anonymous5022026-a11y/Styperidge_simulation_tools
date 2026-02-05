@@ -1,5 +1,4 @@
 
-#Ege University Department of Statistics
 
 library(MASS)
 library("MASS", lib.loc="C:/Program Files/R/R-3.4.3/library")
@@ -1776,5 +1775,6 @@ ridgeglr.simu=function(n,p,nn) {
   
 }
 # Ridge Regression Simulation with Robust Methods end
+
 
 
