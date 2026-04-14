@@ -1,4 +1,5 @@
 
+#Ege University Department of Statistics
 
 library(MASS)
 library("MASS", lib.loc="C:/Program Files/R/R-3.4.3/library")
@@ -1296,36 +1297,43 @@ ridgeglr.simu=function(n,p,nn) {
   betammridge=array(NA,dim=c(s,nn))
   
   MSEls=array(NA,dim=c(1,nn))
+  R2ls=array(NA,dim=c(1,nn))
   stdbeta1ls=array(NA,dim=c(1,nn))
   stdbeta2ls=array(NA,dim=c(1,nn))
   stdbeta3ls=array(NA,dim=c(1,nn))
   
   MSElsridge=array(NA,dim=c(1,nn))
+  R2lsridge=array(NA,dim=c(1,nn))
   stdbeta1lsridge=array(NA,dim=c(1,nn))
   stdbeta2lsridge=array(NA,dim=c(1,nn))
   stdbeta3lsridge=array(NA,dim=c(1,nn))
   
   MSEStype=array(NA,dim=c(1,nn))
+  R2Stype=array(NA,dim=c(1,nn))
   stdbeta1Stype=array(NA,dim=c(1,nn))
   stdbeta2Stype=array(NA,dim=c(1,nn))
   stdbeta3Stype=array(NA,dim=c(1,nn))
   
   MSEhubermr=array(NA,dim=c(1,nn))
+  R2hubermr=array(NA,dim=c(1,nn))
   stdbeta1hubermr=array(NA,dim=c(1,nn))
   stdbeta2hubermr=array(NA,dim=c(1,nn))
   stdbeta3hubermr=array(NA,dim=c(1,nn))
   
   MSEtukeymr=array(NA,dim=c(1,nn))
+  R2tukeymr=array(NA,dim=c(1,nn))
   stdbeta1tukeymr=array(NA,dim=c(1,nn))
   stdbeta2tukeymr=array(NA,dim=c(1,nn))
   stdbeta3tukeymr=array(NA,dim=c(1,nn))
   
   MSEsr=array(NA,dim=c(1,nn))
+  R2sr=array(NA,dim=c(1,nn))
   stdbeta1sr=array(NA,dim=c(1,nn))
   stdbeta2sr=array(NA,dim=c(1,nn))
   stdbeta3sr=array(NA,dim=c(1,nn))
   
   MSEmmr=array(NA,dim=c(1,nn))
+  R2mmr=array(NA,dim=c(1,nn))
   stdbeta1mmr=array(NA,dim=c(1,nn))
   stdbeta2mmr=array(NA,dim=c(1,nn))
   stdbeta3mmr=array(NA,dim=c(1,nn))
@@ -1346,6 +1354,7 @@ ridgeglr.simu=function(n,p,nn) {
     betals[,i]=regls$beta
     
     MSEls[,i]=regls$MSE
+    R2ls[,i]=regls$R2
     stdbeta1ls[,i]=regls$stdbeta[2]
     stdbeta2ls[,i]=regls$stdbeta[3]
     stdbeta3ls[,i]=regls$stdbeta[4]
@@ -1359,6 +1368,14 @@ ridgeglr.simu=function(n,p,nn) {
     MSEsr[,i]=regStyper$esttabledataframe$SRidge[5]
     MSEmmr[,i]=regStyper$esttabledataframe$MMRidge[5]
     
+
+    R2lsridge[,i] <- regStyper$esttabledataframe$LSridge[6]
+    R2Stype[,i]   <- regStyper$esttabledataframe$StypeR[6]
+    R2hubermr[,i] <- regStyper$esttabledataframe$`Huber MRidge`[6]
+    R2tukeymr[,i] <- regStyper$esttabledataframe$`Tukey MRidge`[6]
+    R2sr[,i]      <- regStyper$esttabledataframe$SRidge[6]
+    R2mmr[,i]     <- regStyper$esttabledataframe$MMRidge[6]
+
     
     betalsridge[,i]= regStyper$betaorls
     betaStyper[,i]=regStyper$betaorStype
@@ -1385,7 +1402,7 @@ ridgeglr.simu=function(n,p,nn) {
     regmmr=rlm(y[,,i]~x[,,i],method="MM")
     regmmrW=regmmr$w
     WeightedRidgeMM = Weightedridge.reg(x[,,i],y[,,i],regmmrW)
-    betammridge[,i]=WeightedRidgeMM$ betaor
+    betammridge[,i]=WeightedRidgeMM$betaor
     
     stdbeta1Stype[,i]=regStyper$stdtabledataframe$StypeR[1]
     stdbeta2Stype[,i]=regStyper$stdtabledataframe$StypeR[2]
@@ -1417,6 +1434,14 @@ ridgeglr.simu=function(n,p,nn) {
   MSEsrv=MSEsr[1,]
   MSEmmrv=MSEmmr[1,]
   
+  R2lsv=R2ls[1,]
+  R2lsridgev=R2lsridge[1,]
+  R2Stypev=R2Stype[1,]
+  R2hubermrv=R2hubermr[1,]
+  R2tukeymrv=R2tukeymr[1,]
+  R2srv=R2sr[1,]
+  R2mmrv=R2mmr[1,]
+
   stdbeta1lsv=stdbeta1ls[1,]
   stdbeta2lsv=stdbeta2ls[1,]
   stdbeta3lsv=stdbeta3ls[1,]
@@ -1461,7 +1486,15 @@ ridgeglr.simu=function(n,p,nn) {
   orderedMSE=MSEtemp$xs
   rankMSE=MSEtemp$rankx
   
+
+  R2list=rbind(R2lsv,R2lsridgev,R2Stypev,R2hubermrv,R2tukeymrv,
+               R2srv,R2mmrv)
   
+  R2temp=ordermultiplewithranks(R2list)
+  
+  orderedR2=R2temp$xs
+  rankR2=R2temp$rankx
+
   stdbeta1list=rbind(stdbeta1lsv,stdbeta1lsridgev,stdbeta1Stypev,stdbeta1hubermrv,stdbeta1tukeymrv,
                      stdbeta1srv,stdbeta1mmrv)
   
@@ -1487,35 +1520,39 @@ ridgeglr.simu=function(n,p,nn) {
   orderedstdbeta3=stdbeta3temp$xs
   rankstdbeta3=stdbeta3temp$rankx
   
+ 
+  
   meanrankMSE=apply(rankMSE,1,mean)
   meanrankMSE=t(meanrankMSE)
   meanrankMSE=t(meanrankMSE)
   
+  meanrankR2=apply(rankR2,1,mean)
+  meanrankR2=t(meanrankR2)
+  meanrankR2=t(meanrankR2)
+  meanrankR2dataframe=data.frame(meanrankR2)
+  
   rownames(meanrankMSE)=c("ls","lsridge","Stype","hubermr","tukeymr","sr","mmr")
   meanrankMSEdataframe=data.frame(meanrankMSE)
-  
+
   meanrankstdbeta1=apply(rankstdbeta1,1,mean)
   meanrankstdbeta1=t(meanrankstdbeta1)
   meanrankstdbeta1=t(meanrankstdbeta1)
-  
   meanrankstdbeta1dataframe=data.frame(meanrankstdbeta1)
   
   meanrankstdbeta2=apply(rankstdbeta2,1,mean)
   meanrankstdbeta2=t(meanrankstdbeta2)
   meanrankstdbeta2=t(meanrankstdbeta2)
-  
   meanrankstdbeta2dataframe=data.frame(meanrankstdbeta2)
   
   meanrankstdbeta3=apply(rankstdbeta3,1,mean)
   meanrankstdbeta3=t(meanrankstdbeta3)
   meanrankstdbeta3=t(meanrankstdbeta3)
-  
   meanrankstdbeta3dataframe=data.frame(meanrankstdbeta3)
   
-  
-  meanrankdataframe=cbind(meanrankMSEdataframe,meanrankstdbeta1dataframe,meanrankstdbeta2dataframe,
+  meanrankdataframe=cbind(meanrankMSEdataframe, meanrankR2dataframe, 
+                          meanrankstdbeta1dataframe, meanrankstdbeta2dataframe,
                           meanrankstdbeta3dataframe)
-  
+
   simubetals=meanbiasvarmse(betals,beta)
   simubetalsridge=meanbiasvarmse(betalsridge,beta)
   simubetaStype=meanbiasvarmse(betaStyper,beta)
@@ -1531,7 +1568,15 @@ ridgeglr.simu=function(n,p,nn) {
   simuMSEtukeymr=meanbiasvarmse(MSEtukeymr,MSE)
   simuMSEsr=meanbiasvarmse(MSEsr,MSE)
   simuMSEmmr=meanbiasvarmse(MSEmmr,MSE)
-  
+ 
+  simuR2ls=meanbiasvarmse(R2ls,1)
+  simuR2lsridge=meanbiasvarmse(R2lsridge,1)
+  simuR2Stype=meanbiasvarmse(R2Stype,1)
+  simuR2hubermr=meanbiasvarmse(R2hubermr,1)
+  simuR2tukeymr=meanbiasvarmse(R2tukeymr,1)
+  simuR2sr=meanbiasvarmse(R2sr,1)
+  simuR2mmr=meanbiasvarmse(R2mmr,1)
+
   simustdbeta1ls=meanbiasvarmse(stdbeta1ls,stdbeta1)
   simustdbeta2ls=meanbiasvarmse(stdbeta2ls,stdbeta2)
   simustdbeta3ls=meanbiasvarmse(stdbeta3ls,stdbeta3)
@@ -1593,188 +1638,232 @@ ridgeglr.simu=function(n,p,nn) {
   simumsemmr=n*simubetammr$mseest
   
   simumeanls[5]=simuMSEls$meanest
-  simumeanls[6]=simustdbeta1ls$meanest
-  simumeanls[7]=simustdbeta2ls$meanest
-  simumeanls[8]=simustdbeta3ls$meanest
-  
+  simumeanls[6]=simuR2ls$meanest
+  simumeanls[7]=simustdbeta1ls$meanest
+  simumeanls[8]=simustdbeta2ls$meanest
+  simumeanls[9]=simustdbeta3ls$meanest
+
   simumeanlsridge[5]=simuMSElsridge$meanest
-  simumeanlsridge[6]=simustdbeta1lsridge$meanest
-  simumeanlsridge[7]=simustdbeta2lsridge$meanest
-  simumeanlsridge[8]=simustdbeta3lsridge$meanest
+  simumeanlsridge[6]=simuR2lsridge$meanest
+  simumeanlsridge[7]=simustdbeta1lsridge$meanest
+  simumeanlsridge[8]=simustdbeta2lsridge$meanest
+  simumeanlsridge[9]=simustdbeta3lsridge$meanest
   
   simumeanStype[5]=simuMSEStype$meanest
-  simumeanStype[6]=simustdbeta1Stype$meanest
-  simumeanStype[7]=simustdbeta2Stype$meanest
-  simumeanStype[8]=simustdbeta3Stype$meanest
+  simumeanStype[6]=simuR2Stype$meanest
+  simumeanStype[7]=simustdbeta1Stype$meanest
+  simumeanStype[8]=simustdbeta2Stype$meanest
+  simumeanStype[9]=simustdbeta3Stype$meanest
   
   simumeanhubermr[5]=simuMSEhubermr$meanest
-  simumeanhubermr[6]=simustdbeta1hubermr$meanest
-  simumeanhubermr[7]=simustdbeta2hubermr$meanest
-  simumeanhubermr[8]=simustdbeta3hubermr$meanest
+  simumeanhubermr[6]=simuR2hubermr$meanest
+  simumeanhubermr[7]=simustdbeta1hubermr$meanest
+  simumeanhubermr[8]=simustdbeta2hubermr$meanest
+  simumeanhubermr[9]=simustdbeta3hubermr$meanest
   
   simumeantukeymr[5]=simuMSEtukeymr$meanest
-  simumeantukeymr[6]=simustdbeta1tukeymr$meanest
-  simumeantukeymr[7]=simustdbeta2tukeymr$meanest
-  simumeantukeymr[8]=simustdbeta3tukeymr$meanest
+  simumeantukeymr[6]=simuR2tukeymr$meanest
+  simumeantukeymr[7]=simustdbeta1tukeymr$meanest
+  simumeantukeymr[8]=simustdbeta2tukeymr$meanest
+  simumeantukeymr[9]=simustdbeta3tukeymr$meanest
   
   simumeansr[5]=simuMSEsr$meanest
-  simumeansr[6]=simustdbeta1sr$meanest
-  simumeansr[7]=simustdbeta2sr$meanest
-  simumeansr[8]=simustdbeta3sr$meanest
+  simumeansr[6]=simuR2sr$meanest
+  simumeansr[7]=simustdbeta1sr$meanest
+  simumeansr[8]=simustdbeta2sr$meanest
+  simumeansr[9]=simustdbeta3sr$meanest
   
   simumeanmmr[5]=simuMSEmmr$meanest
-  simumeanmmr[6]=simustdbeta1mmr$meanest
-  simumeanmmr[7]=simustdbeta2mmr$meanest
-  simumeanmmr[8]=simustdbeta3mmr$meanest
+  simumeanmmr[6]=simuR2mmr$meanest
+  simumeanmmr[7]=simustdbeta1mmr$meanest
+  simumeanmmr[8]=simustdbeta2mmr$meanest
+  simumeanmmr[9]=simustdbeta3mmr$meanest
+
   
   simubiasls[5]=NA
-  simubiasls[6]=NA
+  simubiasls[6]=NA  
   simubiasls[7]=NA
   simubiasls[8]=NA
+  simubiasls[9]=NA
   
   simubiaslsridge[5]=NA
   simubiaslsridge[6]=NA
   simubiaslsridge[7]=NA
   simubiaslsridge[8]=NA
+  simubiaslsridge[9]=NA
   
   simubiasStype[5]=NA
   simubiasStype[6]=NA
   simubiasStype[7]=NA
   simubiasStype[8]=NA
+  simubiasStype[9]=NA
   
   simubiashubermr[5]=NA
   simubiashubermr[6]=NA
   simubiashubermr[7]=NA
   simubiashubermr[8]=NA
+  simubiashubermr[9]=NA
   
   simubiastukeymr[5]=NA
   simubiastukeymr[6]=NA
   simubiastukeymr[7]=NA
   simubiastukeymr[8]=NA
+  simubiastukeymr[9]=NA
   
   simubiassr[5]=NA
   simubiassr[6]=NA
   simubiassr[7]=NA
   simubiassr[8]=NA
+  simubiassr[9]=NA
   
   simubiasmmr[5]=NA
   simubiasmmr[6]=NA
   simubiasmmr[7]=NA
   simubiasmmr[8]=NA
+  simubiasmmr[9]=NA
   
   simuvarls[5]=n*simuMSEls$varest
-  simuvarls[6]=n*simustdbeta1ls$varest
-  simuvarls[7]=n*simustdbeta2ls$varest
-  simuvarls[8]=n*simustdbeta3ls$varest
+  simuvarls[6]=n*simuR2ls$varest
+  simuvarls[7]=n*simustdbeta1ls$varest
+  simuvarls[8]=n*simustdbeta2ls$varest
+  simuvarls[9]=n*simustdbeta3ls$varest
   
   simuvarlsridge[5]=n*simuMSElsridge$varest
-  simuvarlsridge[6]=n*simustdbeta1lsridge$varest
-  simuvarlsridge[7]=n*simustdbeta2lsridge$varest
-  simuvarlsridge[8]=n*simustdbeta3lsridge$varest
+  simuvarlsridge[6]=n*simuR2lsridge$varest
+  simuvarlsridge[7]=n*simustdbeta1lsridge$varest
+  simuvarlsridge[8]=n*simustdbeta2lsridge$varest
+  simuvarlsridge[9]=n*simustdbeta3lsridge$varest
   
   simuvarStype[5]=n*simuMSEStype$varest
-  simuvarStype[6]=n*simustdbeta1Stype$varest
-  simuvarStype[7]=n*simustdbeta2Stype$varest
-  simuvarStype[8]=n*simustdbeta3Stype$varest
+  simuvarStype[6]=n*simuR2Stype$varest
+  simuvarStype[7]=n*simustdbeta1Stype$varest
+  simuvarStype[8]=n*simustdbeta2Stype$varest
+  simuvarStype[9]=n*simustdbeta3Stype$varest
   
   simuvarhubermr[5]=n*simuMSEhubermr$varest
-  simuvarhubermr[6]=n*simustdbeta1hubermr$varest
-  simuvarhubermr[7]=n*simustdbeta2hubermr$varest
-  simuvarhubermr[8]=n*simustdbeta3hubermr$varest
+  simuvarhubermr[6]=n*simuR2hubermr$varest
+  simuvarhubermr[7]=n*simustdbeta1hubermr$varest
+  simuvarhubermr[8]=n*simustdbeta2hubermr$varest
+  simuvarhubermr[9]=n*simustdbeta3hubermr$varest
   
   simuvartukeymr[5]=n*simuMSEtukeymr$varest
-  simuvartukeymr[6]=n*simustdbeta1tukeymr$varest
-  simuvartukeymr[7]=n*simustdbeta2tukeymr$varest
-  simuvartukeymr[8]=n*simustdbeta3tukeymr$varest
+  simuvartukeymr[6]=n*simuR2tukeymr$varest
+  simuvartukeymr[7]=n*simustdbeta1tukeymr$varest
+  simuvartukeymr[8]=n*simustdbeta2tukeymr$varest
+  simuvartukeymr[9]=n*simustdbeta3tukeymr$varest
   
   simuvarsr[5]=n*simuMSEsr$varest
-  simuvarsr[6]=n*simustdbeta1sr$varest
-  simuvarsr[7]=n*simustdbeta2sr$varest
-  simuvarsr[8]=n*simustdbeta3sr$varest
+  simuvarsr[6]=n*simuR2sr$varest
+  simuvarsr[7]=n*simustdbeta1sr$varest
+  simuvarsr[8]=n*simustdbeta2sr$varest
+  simuvarsr[9]=n*simustdbeta3sr$varest
   
   simuvarmmr[5]=n*simuMSEmmr$varest
-  simuvarmmr[6]=n*simustdbeta1mmr$varest
-  simuvarmmr[7]=n*simustdbeta2mmr$varest
-  simuvarmmr[8]=n*simustdbeta3mmr$varest
+  simuvarmmr[6]=n*simuR2mmr$varest
+  simuvarmmr[7]=n*simustdbeta1mmr$varest
+  simuvarmmr[8]=n*simustdbeta2mmr$varest
+  simuvarmmr[9]=n*simustdbeta3mmr$varest
   
   simumsels[5]=NA
-  simumsels[6]=NA
+  simumsels[6]=NA  
   simumsels[7]=NA
   simumsels[8]=NA
+  simumsels[9]=NA
   
   simumselsridge[5]=NA
   simumselsridge[6]=NA
   simumselsridge[7]=NA
   simumselsridge[8]=NA
+  simumselsridge[9]=NA
   
   simumseStype[5]=NA
   simumseStype[6]=NA
   simumseStype[7]=NA
   simumseStype[8]=NA
+  simumseStype[9]=NA
   
   simumsehubermr[5]=NA
   simumsehubermr[6]=NA
   simumsehubermr[7]=NA
   simumsehubermr[8]=NA
+  simumsehubermr[9]=NA
   
   simumsetukeymr[5]=NA
   simumsetukeymr[6]=NA
   simumsetukeymr[7]=NA
   simumsetukeymr[8]=NA
+  simumsetukeymr[9]=NA
   
   simumsesr[5]=NA
   simumsesr[6]=NA
   simumsesr[7]=NA
   simumsesr[8]=NA
+  simumsesr[9]=NA
   
   simumsemmr[5]=NA
   simumsemmr[6]=NA
   simumsemmr[7]=NA
   simumsemmr[8]=NA
-  
-  simuREffls=100*simumselsridge/simumsels
-  simuREfflsridge=100*simumselsridge/simumselsridge
-  simuREffStype=100*simumselsridge/simumseStype
-  simuREfftukeymr=100*simumselsridge/simumsetukeymr
-  simuREffhubermr=100*simumselsridge/simumsehubermr
-  simuREffsr=100*simumselsridge/simumsesr
-  simuREffmmr=100*simumselsridge/simumsemmr
-  
-  for(i in 5:8){
+  simumsemmr[9]=NA
+
+  simuREffls = 100 * simumselsridge / simumsels
+  simuREfflsridge = 100 * simumselsridge / simumselsridge
+  simuREffStype = 100 * simumselsridge / simumseStype
+  simuREfftukeymr = 100 * simumselsridge / simumsetukeymr
+  simuREffhubermr = 100 * simumselsridge / simumsehubermr
+  simuREffsr = 100 * simumselsridge / simumsesr
+  simuREffmmr = 100 * simumselsridge / simumsemmr
+
+  for(i in 5:9){
     
-    simuREffls[i]=100*simumeanlsridge[i]/simumeanls[i]
-    simuREfflsridge[i]=100*simumeanlsridge[i]/simumeanlsridge[i]
-    simuREffStype[i]=100*simumeanlsridge[i]/simumeanStype[i]
-    simuREfftukeymr[i]=100*simumeanlsridge[i]/simumeantukeymr[i]
-    simuREffhubermr[i]=100*simumeanlsridge[i]/simumeanhubermr[i]
-    simuREffsr[i]=100*simumeanlsridge[i]/simumeansr[i]
-    simuREffmmr[i]=100*simumeanlsridge[i]/simumeanmmr[i]
-    
+    if(i == 6){ # Special case for R2 (Higher is better)
+      simuREffls[i]       = 100 * simumeanls[i] / simumeanlsridge[i]
+      simuREfflsridge[i]  = 100 * simumeanlsridge[i] / simumeanlsridge[i]
+      simuREffStype[i]    = 100 * simumeanStype[i] / simumeanlsridge[i]
+      simuREfftukeymr[i]  = 100 * simumeantukeymr[i] / simumeanlsridge[i]
+      simuREffhubermr[i]  = 100 * simumeanhubermr[i] / simumeanlsridge[i]
+      simuREffsr[i]       = 100 * simumeansr[i] / simumeanlsridge[i]
+      simuREffmmr[i]      = 100 * simumeanmmr[i] / simumeanlsridge[i]
+      
+    } else {    # MSE and stdbeta cases (Lower is better)
+      simuREffls[i]       = 100 * simumeanlsridge[i] / simumeanls[i]
+      simuREfflsridge[i]  = 100 * simumeanlsridge[i] / simumeanlsridge[i]
+      simuREffStype[i]    = 100 * simumeanlsridge[i] / simumeanStype[i]
+      simuREfftukeymr[i]  = 100 * simumeanlsridge[i] / simumeantukeymr[i]
+      simuREffhubermr[i]  = 100 * simumeanlsridge[i] / simumeanhubermr[i]
+      simuREffsr[i]       = 100 * simumeanlsridge[i] / simumeansr[i]
+      simuREffmmr[i]      = 100 * simumeanlsridge[i] / simumeanmmr[i]
+    }
   }
   
-  simutable=rbind(simumeanls,simumeanlsridge, simumeanStype,simumeanhubermr,simumeantukeymr,
-                  simumeansr,simumeanmmr)
+  simutable = rbind(simumeanls, simumeanlsridge, simumeanStype, simumeanhubermr, simumeantukeymr,
+                    simumeansr, simumeanmmr)
   
-  simutable=rbind(simutable,simubiasls,simubiaslsridge, simubiasStype,simubiashubermr,simubiastukeymr,
-                  simubiassr,simubiasmmr)
   
-  simutable=rbind(simutable,simuvarls,simuvarlsridge, simuvarStype,simuvarhubermr,simuvartukeymr,
-                  simuvarsr,simuvarmmr)
-  
-  simutable=rbind(simutable,simumsels,simumselsridge,simumseStype,simumsehubermr,simumsetukeymr,
-                  simumsesr,simumsemmr)
-  
-  simutable=rbind(simutable,simuREffls,simuREfflsridge,simuREffStype,simuREffhubermr,simuREfftukeymr,
-                  simuREffsr,simuREffmmr)
-  
-  simutabledataframe=data.frame(simutable)
-  colnames(simutabledataframe)=c("b0","b1","b2","b3","MSE","stdbeta1","stdbeta2","stdbeta3")
- # print(simutabledataframe)
-#  print(meanrankdataframe)
-  z=list(simutabledataframe=simutabledataframe,meanrankdataframe=meanrankdataframe)
-  
-}
-# Ridge Regression Simulation with Robust Methods end
 
+simutable = rbind(simutable,
+                  simubiasls, simubiaslsridge, simubiasStype, simubiashubermr, simubiastukeymr,
+                  simubiassr, simubiasmmr)
+
+simutable = rbind(simutable,
+                  simuvarls, simuvarlsridge, simuvarStype, simuvarhubermr, simuvartukeymr,
+                  simuvarsr, simuvarmmr)
+
+simutable = rbind(simutable,
+                  simumsels, simumselsridge, simumseStype, simumsehubermr, simumsetukeymr,
+                  simumsesr, simumsemmr)
+
+simutable = rbind(simutable,
+                  simuREffls, simuREfflsridge, simuREffStype, simuREffhubermr, simuREfftukeymr,
+                  simuREffsr, simuREffmmr)
+
+simutabledataframe = data.frame(simutable)
+colnames(simutabledataframe) = c("b0","b1","b2","b3","MSE","R2","stdbeta1","stdbeta2","stdbeta3")
+
+z = list(simutabledataframe = simutabledataframe, meanrankdataframe = meanrankdataframe)
+
+}
+
+# Ridge Regression Simulation with Robust Methods end
 
 
