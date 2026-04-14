@@ -1,6 +1,4 @@
 
-#Ege University Department of Statistics
-
 library(MASS)
 library("MASS", lib.loc="C:/Program Files/R/R-3.4.3/library")
 
